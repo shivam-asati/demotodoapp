@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mvc:View
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="demotodoappui.controller.MainView"
+  xmlns:core="sap.ui.core">
+  <VBox class="sapUiSmallMargin">
+    <HBox>
+      <Input id="taskInput" placeholder="Enter a new task..." width="80%"/>
+      <Button text="Add Task" press="onAddTask" width="20%"/>
+    </HBox>
+    <List id="taskList" items="{tasks>/tasks}">
+      <CustomListItem>
+        <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%">
+          <HBox alignItems="Center">
+            <CheckBox selected="{tasks>completed}" select="onTaskCompleted"/>
+            <Text text="{tasks>title}" class="sapUiSmallMarginBegin"/>
+          </HBox>
+          <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+        </HBox>
+      </CustomListItem>
+    </List>
+  </VBox>
+</mvc:View>

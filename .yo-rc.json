@@ -1,0 +1,16 @@
+{
+  "generator-ui5-project": {
+    "namespaceUI5": "demotodoappui",
+    "projectName": "demotodoap",
+    "uimoduleName": "demotodoapui",
+    "enableFPM": false,
+    "platform": "Application Frontend Service",
+    "ui5Libs": "Content delivery network (SAPUI5)",
+    "newDir": false,
+    "initRepo": false,
+    "projectId": "demotodoappui.demotodoap",
+    "uimodules": [
+      "demotodoapui"
+    ]
+  }
+}

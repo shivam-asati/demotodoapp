@@ -1,0 +1,42 @@
+_schema-version: "3.2"
+ID: demotodoappui.demotodoap
+version: 0.0.1
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npm run build:workspaces
+modules:
+  - name: demotodoappui.demotodoap-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: demotodoappui.demotodoap-auth
+      - name: demotodoappui.demotodoap-app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - dist/demotodoapui-content.zip
+          name: demotodoapui
+          target-path: resources/
+  - name: demotodoapui
+    type: html5
+    path: demotodoapui
+    build-parameters:
+      supported-platforms: []
+resources:
+  - name: demotodoappui.demotodoap-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-plan: developer
+  - name: demotodoappui.demotodoap-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
