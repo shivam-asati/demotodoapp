@@ -3,25 +3,44 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
   controllerName="demotodoappui.controller.MainView"
-  xmlns:core="sap.ui.core">
-
+>
   <VBox class="sapUiSmallMargin">
-    <HBox>
-      <Input id="taskInput" placeholder="Enter a new task..." width="80%" />
-      <Button text="Add Task" press="onAddTask" width="20%" />
-    </HBox>
-
-    <List id="taskList" items="{tasks>/tasks}">
-      <CustomListItem>
-        <HBox justifyContent="SpaceBetween" alignItems="Center">
-          <Text text="{tasks>title}" textDecoration="{= ${tasks>completed} ? 'LineThrough' : 'None'}" />
-          <HBox>
-            <Button icon="sap-icon://accept" press="onCompleteTask" type="Accept" />
-            <Button icon="sap-icon://delete" press="onDeleteTask" type="Reject" />
-          </HBox>
+    <Panel headerText="To-Do Application" class="sapUiResponsiveMargin" width="100%">
+      <content>
+        <HBox width="100%" justifyContent="SpaceBetween" alignItems="Center">
+          <Input
+            id="taskInput"
+            placeholder="Enter a new task"
+            width="80%"
+          />
+          <Button
+            text="Add Task"
+            press="onAddTask"
+            type="Emphasized"
+          />
         </HBox>
-      </CustomListItem>
-    </List>
+        <List
+          id="taskList"
+          items="{/tasks}"
+          class="sapUiSmallMarginTop"
+        >
+          <CustomListItem>
+            <HBox width="100%" alignItems="Center">
+              <CheckBox
+                selected="{completed}"
+                select="onTaskComplete"
+              />
+              <Text text="{name}" class="sapUiSmallMarginBegin" />
+              <Button
+                icon="sap-icon://delete"
+                type="Transparent"
+                press="onDeleteTask"
+                class="sapUiSmallMarginBegin"
+              />
+            </HBox>
+          </CustomListItem>
+        </List>
+      </content>
+    </Panel>
   </VBox>
-
 </mvc:View>

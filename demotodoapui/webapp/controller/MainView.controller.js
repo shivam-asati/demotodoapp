@@ -1,56 +1,56 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
-  "sap/ui/model/json/JSONModel"
-], function (Controller, JSONModel) {
+  "sap/ui/model/json/JSONModel",
+  "sap/m/MessageToast"
+], function (Controller, JSONModel, MessageToast) {
   "use strict";
 
   return Controller.extend("demotodoappui.controller.MainView", {
-
     onInit: function () {
-      // Initialize JSON model with mocked data
+      // Initialize JSON Model with mock data
       var oData = {
-        tasks: [
-          { title: "Buy groceries", completed: false },
-          { title: "Pay bills", completed: true }
-        ]
+        tasks: []
       };
       var oModel = new JSONModel(oData);
-      this.getView().setModel(oModel, "tasks");
+      this.getView().setModel(oModel);
     },
 
     onAddTask: function () {
-      var oInput = this.getView().byId("taskInput");
-      var sValue = oInput.getValue();
-      if (!sValue) {
-        sap.m.MessageToast.show("Please enter a task.");
+      var oView = this.getView();
+      var oModel = oView.getModel();
+      var aTasks = oModel.getProperty("/tasks");
+      var sTaskName = oView.byId("taskInput").getValue();
+
+      if (!sTaskName.trim()) {
+        MessageToast.show("Task name cannot be empty.");
         return;
       }
 
-      var oModel = this.getView().getModel("tasks");
-      var aTasks = oModel.getProperty("/tasks");
-      aTasks.push({ title: sValue, completed: false });
+      aTasks.push({
+        name: sTaskName,
+        completed: false
+      });
+
       oModel.setProperty("/tasks", aTasks);
-      oInput.setValue("");
+      oView.byId("taskInput").setValue("");
     },
 
-    onCompleteTask: function (oEvent) {
-      var oContext = oEvent.getSource().getBindingContext("tasks");
-      var oModel = this.getView().getModel("tasks");
-      var oTask = oContext.getObject();
-      oTask.completed = true;
-      oModel.refresh();
+    onTaskComplete: function (oEvent) {
+      var oModel = this.getView().getModel();
+      var oContext = oEvent.getSource().getBindingContext();
+      var bCompleted = oEvent.getParameter("selected");
+
+      oModel.setProperty(oContext.getPath() + "/completed", bCompleted);
     },
 
     onDeleteTask: function (oEvent) {
-      var oContext = oEvent.getSource().getBindingContext("tasks");
-      var oModel = this.getView().getModel("tasks");
+      var oModel = this.getView().getModel();
       var aTasks = oModel.getProperty("/tasks");
-      var iIndex = aTasks.indexOf(oContext.getObject());
-      if (iIndex !== -1) {
-        aTasks.splice(iIndex, 1);
-        oModel.setProperty("/tasks", aTasks);
-      }
-    }
+      var oContext = oEvent.getSource().getBindingContext();
+      var iIndex = parseInt(oContext.getPath().split("/")[2], 10);
 
+      aTasks.splice(iIndex, 1);
+      oModel.setProperty("/tasks", aTasks);
+    }
   });
 });
