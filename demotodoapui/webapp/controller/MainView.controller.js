@@ -1,71 +1,70 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/model/json/JSONModel",
-  "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+  "sap/ui/model/Filter",
+  "sap/ui/model/FilterOperator"
+], function (Controller, JSONModel, Filter, FilterOperator) {
   "use strict";
 
-  return Controller.extend("demotodoappui.controller.MainView", {
-
+  return Controller.extend("demotodoapui.controller.MainView", {
     onInit: function () {
-      // Mock Data for Sales Orders
+      // Mock data
       var oData = {
-        SalesOrders: [
-          {
-            OrderID: "SO001",
-            CustomerName: "John Doe",
-            OrderDate: "2023-10-01",
-            TotalAmount: "$500",
-            OrderStatus: "Completed"
-          },
-          {
-            OrderID: "SO002",
-            CustomerName: "Jane Smith",
-            OrderDate: "2023-10-05",
-            TotalAmount: "$300",
-            OrderStatus: "Pending"
-          },
-          {
-            OrderID: "SO003",
-            CustomerName: "Michael Brown",
-            OrderDate: "2023-10-10",
-            TotalAmount: "$700",
-            OrderStatus: "Cancelled"
-          }
+        sales: [
+          { date: "2023-10-01", flavor: "Vanilla", quantity: 50, revenue: 150, profit: 50 },
+          { date: "2023-10-02", flavor: "Chocolate", quantity: 70, revenue: 210, profit: 70 },
+          { date: "2023-10-03", flavor: "Strawberry", quantity: 30, revenue: 90, profit: 30 }
         ]
       };
 
-      // Create JSON Model and set to View
+      // Create JSON model
       var oModel = new JSONModel(oData);
-      this.getView().setModel(oModel, "salesOrderModel");
+      this.getView().setModel(oModel, "salesModel");
+
+      // Calculate summary
+      this._calculateSummary();
     },
 
-    onSearch: function (oEvent) {
-      // Get the search query
-      var sQuery = oEvent.getParameter("query");
-      var oTable = this.getView().byId("salesOrderTable");
+    onFilter: function (oEvent) {
+      var sQuery = oEvent.getParameter("newValue");
+      var oTable = this.byId("salesTable");
       var oBinding = oTable.getBinding("items");
 
-      // Apply filters if query exists
+      var aFilters = [];
       if (sQuery) {
-        var oFilter = new sap.ui.model.Filter(
-          "CustomerName",
-          sap.ui.model.FilterOperator.Contains,
-          sQuery
-        );
-        oBinding.filter([oFilter]);
-      } else {
-        oBinding.filter([]); // Clear filters
+        aFilters.push(new Filter("flavor", FilterOperator.Contains, sQuery));
+        aFilters.push(new Filter("date", FilterOperator.Contains, sQuery));
       }
+
+      oBinding.filter(aFilters.length > 0 ? new Filter(aFilters, false) : []);
+      this._calculateSummary();
     },
 
-    onFilter: function () {
-      MessageToast.show("Filter functionality not implemented yet.");
+    onResetFilters: function () {
+      var oTable = this.byId("salesTable");
+      var oBinding = oTable.getBinding("items");
+      oBinding.filter([]);
+      this.byId("filterInput").setValue("");
+      this._calculateSummary();
     },
 
-    onSort: function () {
-      MessageToast.show("Sort functionality not implemented yet.");
+    _calculateSummary: function () {
+      var oModel = this.getView().getModel("salesModel");
+      var aSales = oModel.getProperty("/sales");
+
+      var iTotalSales = 0;
+      var iTotalRevenue = 0;
+      var iTotalProfit = 0;
+
+      aSales.forEach(function (oSale) {
+        iTotalSales += oSale.quantity;
+        iTotalRevenue += oSale.revenue;
+        iTotalProfit += oSale.profit;
+      });
+
+      this.byId("totalSales").setText(iTotalSales);
+      this.byId("totalRevenue").setText(iTotalRevenue);
+      this.byId("totalProfit").setText(iTotalProfit);
     }
-
   });
 });
