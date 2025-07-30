@@ -3,44 +3,27 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
   controllerName="demotodoappui.controller.MainView"
->
-  <VBox class="sapUiSmallMargin">
-    <Panel headerText="To-Do Application" class="sapUiResponsiveMargin" width="100%">
-      <content>
-        <HBox width="100%" justifyContent="SpaceBetween" alignItems="Center">
-          <Input
-            id="taskInput"
-            placeholder="Enter a new task"
-            width="80%"
-          />
-          <Button
-            text="Add Task"
-            press="onAddTask"
-            type="Emphasized"
-          />
+  xmlns:core="sap.ui.core">
+  <Page title="To-Do Application">
+    <content>
+      <VBox class="sapUiSmallMargin">
+        <HBox>
+          <Input id="taskInput" placeholder="Enter a new task..." width="80%"/>
+          <Button text="Add Task" press="onAddTask" width="20%"/>
         </HBox>
-        <List
-          id="taskList"
-          items="{/tasks}"
-          class="sapUiSmallMarginTop"
-        >
+        <List id="taskList" items="{tasks>/taskList}">
           <CustomListItem>
-            <HBox width="100%" alignItems="Center">
-              <CheckBox
-                selected="{completed}"
-                select="onTaskComplete"
-              />
-              <Text text="{name}" class="sapUiSmallMarginBegin" />
-              <Button
-                icon="sap-icon://delete"
-                type="Transparent"
-                press="onDeleteTask"
-                class="sapUiSmallMarginBegin"
-              />
+            <HBox>
+              <CheckBox selected="{tasks>completed}" select="onTaskComplete"/>
+              <Text text="{tasks>task}" class="{= ${tasks>completed} ? 'completedTask' : ''}"/>
             </HBox>
           </CustomListItem>
         </List>
-      </content>
-    </Panel>
-  </VBox>
+        <HBox>
+          <Button text="Delete Selected" press="onDeleteTask" type="Reject"/>
+          <Button text="Mark All Completed" press="onMarkAllCompleted" type="Accept"/>
+        </HBox>
+      </VBox>
+    </content>
+  </Page>
 </mvc:View>
