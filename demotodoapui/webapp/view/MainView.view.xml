@@ -4,25 +4,41 @@
   xmlns="sap.m"
   controllerName="demotodoappui.controller.MainView"
   xmlns:core="sap.ui.core">
-  <Page title="To-Do Application">
+
+  <Page title="Sales Order Dashboard">
     <content>
       <VBox class="sapUiSmallMargin">
-        <HBox>
-          <Input id="taskInput" placeholder="Enter a new task..." width="80%"/>
-          <Button text="Add Task" press="onAddTask" width="20%"/>
-        </HBox>
-        <List id="taskList" items="{tasks>/taskList}">
-          <CustomListItem>
-            <HBox>
-              <CheckBox selected="{tasks>completed}" select="onTaskComplete"/>
-              <Text text="{tasks>task}" class="{= ${tasks>completed} ? 'completedTask' : ''}"/>
-            </HBox>
-          </CustomListItem>
-        </List>
-        <HBox>
-          <Button text="Delete Selected" press="onDeleteTask" type="Reject"/>
-          <Button text="Mark All Completed" press="onMarkAllCompleted" type="Accept"/>
-        </HBox>
+        <Toolbar>
+          <SearchField
+            id="searchField"
+            width="50%"
+            placeholder="Search Sales Orders"
+            search="onSearch" />
+          <ToolbarSpacer />
+          <Button text="Filter" press="onFilter" icon="sap-icon://filter" />
+          <Button text="Sort" press="onSort" icon="sap-icon://sort" />
+        </Toolbar>
+
+        <Table id="salesOrderTable" items="{salesOrderModel>/SalesOrders}" inset="false">
+          <columns>
+            <Column><Text text="Order ID" /></Column>
+            <Column><Text text="Customer Name" /></Column>
+            <Column><Text text="Order Date" /></Column>
+            <Column><Text text="Total Amount" /></Column>
+            <Column><Text text="Order Status" /></Column>
+          </columns>
+          <items>
+            <ColumnListItem>
+              <cells>
+                <Text text="{salesOrderModel>OrderID}" />
+                <Text text="{salesOrderModel>CustomerName}" />
+                <Text text="{salesOrderModel>OrderDate}" />
+                <Text text="{salesOrderModel>TotalAmount}" />
+                <Text text="{salesOrderModel>OrderStatus}" />
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
       </VBox>
     </content>
   </Page>
